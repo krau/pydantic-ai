@@ -5,7 +5,7 @@ import warnings
 from collections.abc import AsyncIterable, AsyncIterator, Sequence
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Literal, Union, cast, overload
 
 from typing_extensions import assert_never
@@ -337,7 +337,11 @@ class OpenAIModel(Model):
 
     def _process_response(self, response: chat.ChatCompletion) -> ModelResponse:
         """Process a non-streamed response, and prepare a message to return."""
-        timestamp = number_to_datetime(response.created)
+        if response.created:
+            timestamp = number_to_datetime(response.created)
+        else:
+            print('Warning: OpenAI response does not have a created timestamp, using current time.')
+            timestamp = datetime.now(timezone.utc)
         choice = response.choices[0]
         items: list[ModelResponsePart] = []
         # The `reasoning_content` is only present in DeepSeek models.
