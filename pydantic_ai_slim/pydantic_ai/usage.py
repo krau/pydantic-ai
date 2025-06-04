@@ -44,7 +44,11 @@ class Usage:
         if incr_usage.details:
             self.details = self.details or {}
             for key, value in incr_usage.details.items():
-                self.details[key] = self.details.get(key, 0) + value
+                try:
+                    self.details[key] = self.details.get(key, 0) + value
+                except TypeError as e:
+                    print(f'Error incrementing usage details for key {key!r}: {e}')
+                    continue
 
     def __add__(self, other: Usage) -> Usage:
         """Add two Usages together.
