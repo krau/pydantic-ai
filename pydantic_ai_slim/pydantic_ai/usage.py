@@ -47,7 +47,7 @@ class Usage:
                 try:
                     self.details[key] = self.details.get(key, 0) + value
                 except TypeError as e:
-                    print(f'Error incrementing usage details for key {key!r}: {e}')
+                    print(f'Error incrementing usage details for key {key!r}: {e}\nKey: {key!r}, Value: {value!r}')
                     continue
 
     def __add__(self, other: Usage) -> Usage:
